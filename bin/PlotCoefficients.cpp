@@ -94,16 +94,28 @@ int main(int argc, char** argv) {
       }
       
       
-      if (ieta != -99) {
-        h_EB  -> Fill (iphi, ieta, value);
+      if (value>10) {
+        std::cout << " problem: " << iphi << ", " << ieta << ", " << ix << ", " << iy << ", " << iz << " ::: " << value << std::endl; 
       }
       else {
-        h_EE  -> Fill (iz < 0 ? ix : ix+100, iy, value);      
+        if (ieta != -99) {
+          h_EB  -> Fill (iphi, ieta, value);
+        }
+        else {
+          h_EE  -> Fill (iz < 0 ? ix : ix+100, iy, value);      
+        }
       }
     }
   }
   
   fileOutSummary->cd();
+  
+  h_EB -> GetXaxis() -> SetTitle("iphi");
+  h_EB -> GetYaxis() -> SetTitle("ieta");
+  
+  h_EE -> GetXaxis() -> SetTitle("X");
+  h_EE -> GetYaxis() -> SetTitle("Y");
+  
   h_EB  -> Write();
   h_EE  -> Write();
   
