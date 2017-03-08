@@ -30,4 +30,19 @@ Run:
 
 
     PlotCoefficients   p2_prediction_IL100_corr.dat      IL100corr
+
+Get from DB:
+
+    cd CMSSW_8_0_26_patch1/src/
+    git cms-init
+    git clone git@github.com:ferriff/usercode.git
+    git cms-merge-topic -u ferriff:ecal_calib_tools
+    scramv1 b -j 5
     
+    conddb_dumper -c frontier://FrontierProd/CMS_CONDITIONS -t EcalChannelStatus_v09_offline -O EcalChannelStatus
+    conddb_dumper -t EcalChannelStatus_v09_offline -O EcalChannelStatus
+    less dump_EcalChannelStatus__since_00280945_till_18446744073709551615.dat|awk '{print $5,$4}'>channel_status_160916_280945.dat
+    
+
+    
+    PlotChannelStatus   dump_EcalChannelStatus__since_00285090_till_18446744073709551615.dat
