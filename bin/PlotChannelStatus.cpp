@@ -57,13 +57,14 @@ int main(int argc, char** argv) {
   TString nametemp;
   nametemp = Form ("testSummaryChannelStatus%s.root", output_file_tail.c_str());
   TFile* fileOutSummary = new TFile (nametemp.Data(), "RECREATE");
-  TH2F* h_EB  = new TH2F ("h_EB", "TransparencyLoss",   360, 0.5, 360.5,  171, -85.5, 85.5);
+  TH2F* h_EB  = new TH2F ("h_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5);
   
-  TH2F* h_EE  = new TH2F ("h_EE", "TransparencyLoss",   200, 0.5, 200.5,  100, 0.5, 100.5);
+  TH2F* h_EE  = new TH2F ("h_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
    
   while(!file.eof()) {
 
     int detId = 0;
+    float value = 0;
     
     pulse.clear();
     
@@ -74,16 +75,10 @@ int main(int argc, char** argv) {
       int ieta, iphi, ix, iy, iz;
       
       line >> num; 
-      ieta = num;
-
       line >> num; 
-      iphi = num;
-
       line >> num; 
-      ix = num;
-
       line >> num; 
-      iy = num;
+      value = num;
       
       
       line >> unum; 
@@ -107,10 +102,10 @@ int main(int argc, char** argv) {
       
       
       if (ieta != -99) {
-        h_EB  -> Fill (iphi, ieta, 1);
+        h_EB  -> Fill (iphi, ieta, value);
       }
       else {
-        h_EE  -> Fill (iz < 0 ? ix : ix+100, iy, 1);      
+        h_EE  -> Fill (iz < 0 ? ix : ix+100, iy, value);      
       }
       
       
