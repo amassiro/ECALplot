@@ -29,7 +29,10 @@ Run:
     PlotCoefficients   /afs/cern.ch/user/k/kbelobor/public/ForShervin/p2_prediction_IL120.dat      IL120
 
 
-    PlotCoefficients   p2_prediction_IL100_corr.dat      IL100corr
+    PlotCoefficients   p2_prediction_IL100_corr.dat           IL100corr
+    PlotCoefficients   p2_prediction_IL100_corr_3rms.dat      IL100corrFilter3sigma
+    PlotCoefficients   p2_prediction_IL100_corr_3rms_av.dat   IL100corrFilter3sigma
+
 
 Get from DB:
 
@@ -46,3 +49,5 @@ Get from DB:
 
     
     PlotChannelStatus   dump_EcalChannelStatus__since_00285090_till_18446744073709551615.dat
+
+    
