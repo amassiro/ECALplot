@@ -53,4 +53,10 @@ Get from DB:
     
     PlotChannelStatus   dump_EcalChannelStatus__since_00285090_till_18446744073709551615.dat
 
+
+    
+Download from DB the laser tag:
+
+    lava_db  -c  /afs/cern.ch/work/e/ecalmon/public/dropbox/MC_Tag/EcallaserTag_MC_80X_2017.db     -t EcalLaserAPDPNRatios_2017_mc
+    
     
