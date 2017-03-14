@@ -63,6 +63,15 @@ int main(int argc, char** argv) {
   std::ofstream myfile;
   myfile.open (nametemp.Data());
   
+//   0.35 GeV in EB 0.60 in EE
+//   alpha 1.5 in EB, 1.16 in EE
+  
+  float adc2gev_EE = 0.60;
+  float adc2gev_EB = 0.35;
+  
+  float alpha_EE = 1.6;
+  float alpha_EB = 1.5;
+  
   while(!file.eof()) {
 
     int detId = 0;
@@ -101,10 +110,10 @@ int main(int argc, char** argv) {
       }
       else {
         if (ieta != -99) {
-          
+          myfile << " " << iphi << " " << ieta << "     " << adc2gev_EB * pow(1./value, alpha_EB) << std::endl;
         }
         else {
-          myfile << " " << ix << " " << iy << " " << iz << "     " << value << std::endl;
+          myfile << " " << ix << " " << iy << " " << iz << "     " <<  adc2gev_EE * pow(1./value, alpha_EE) << std::endl;
         }
       }
     }
