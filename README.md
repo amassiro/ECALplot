@@ -35,6 +35,12 @@ Run:
 
     PlotCoefficients   p2_prediction_IL75_corr_3rms_av.dat    IL75corrFilter3sigma
 
+    cat laserTag_MC_80X_2017.dat | tr "P" " " > laserTag_MC_80X_2017_filter.dat
+    then remove the first line
+    PlotCoefficients   laserTag_MC_80X_2017_filter.dat    laserTag_MC_80X_2017_filter
+
+    DeriveCoefficientsForSR   laserTag_MC_80X_2017_filter.dat    laserTag_MC_80X_2017_filter
+
 
 
 Get from DB:
