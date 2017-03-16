@@ -61,6 +61,7 @@
   <use name="RecoEgamma/EgammaIsolationAlgos"/>
   <use name="PhysicsTools/RecoAlgos"/>
   <use name="DataFormats/EcalDetId"/>
+<!--   <use name="Calibration/Tools"/> -->
   <use name="RecoEcal/EgammaCoreTools"/>
   <flags LCGDICT_ARGS="--deep"/>
 </bin>

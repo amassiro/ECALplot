@@ -25,6 +25,46 @@
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
 // #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
 
+// #include "Calibration/Tools/interface/EcalRingCalibrationTools.h"
+// #include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
+// #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+// #include "Geometry/Records/interface/CaloGeometryRecord.h"
+
+
+short getRingIndex(DetId id) {
+  if (id.det() != DetId::Ecal)
+    return -1;
+  
+  if (id.subdetId() == EcalBarrel) {
+    return EBDetId(id).ieta(); 
+//     if(EBDetId(id).ieta()<0) 
+//       return EBDetId(id).ieta() + 85; 
+//     else 
+//       return EBDetId(id).ieta() + 84; 
+  }
+  if (id.subdetId() == EcalEndcap) {
+    
+    EEDetId eid(id);
+    
+    short ix   = eid.ix();
+    short iy   = eid.iy();
+    short iz   = eid.zside();
+    
+    
+    short endcapRingIndex = 51 - sqrt((ix-50) * (ix-50) + (iy-50) * (iy-50));  
+    if (iz == 1) {
+      endcapRingIndex = endcapRingIndex + 85;
+    }
+    else {
+      endcapRingIndex = -85 - endcapRingIndex;
+    }
+    return endcapRingIndex;
+  }
+  return -1;
+}
+
+
+
 
 
 int main(int argc, char** argv) {
@@ -72,6 +112,19 @@ int main(int argc, char** argv) {
   float alpha_EE = 1.6;
   float alpha_EB = 1.5;
   
+  nametemp = Form ("testSummary_rings_%s.root", output_file_tail.c_str());
+  TFile* fileOutSummary = new TFile (nametemp.Data(), "RECREATE");
+  
+  TH2F* h_EB  = new TH2F ("h_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5); 
+  TH2F* h_EE  = new TH2F ("h_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
+  
+  
+  
+  
+//   EcalRingCalibrationTools toolForCalib;
+
+  std::map < int, float > map_of_values;
+  
   while(!file.eof()) {
 
     int detId = 0;
@@ -87,7 +140,7 @@ int main(int argc, char** argv) {
       
       line >> value; 
       
-      int ieta, iphi, ix, iy, iz;
+      int ieta, iphi, ix, iy, iz, iring;
       
       if ( DetId(detId).subdetId() == 1) {
         ieta = EBDetId(detId).ieta();
@@ -95,6 +148,8 @@ int main(int argc, char** argv) {
         ix = -99;
         iy = -99;
         iz = -99;
+//         iring = toolForCalib.getRingIndex(detId);
+        iring = getRingIndex(detId);
       }
       else {
         ieta = -99;
@@ -102,6 +157,8 @@ int main(int argc, char** argv) {
         ix   = EEDetId(detId).ix();
         iy   = EEDetId(detId).iy();
         iz   = EEDetId(detId).zside();
+//         iring = toolForCalib.getRingIndex(detId);
+        iring = getRingIndex(detId);
       }
       
       
@@ -110,23 +167,57 @@ int main(int argc, char** argv) {
       }
       else {
         if (ieta != -99) {
-          myfile << " " << iphi << " " << ieta << "     " << adc2gev_EB * pow(1./value, alpha_EB) << std::endl;
+//           myfile << " " << iphi << " " << ieta << "     " << adc2gev_EB * pow(1./value, alpha_EB) << std::endl;
+          map_of_values[iring] = adc2gev_EB * pow(1./value, alpha_EB);
+//           myfile << " " << iring << "     " << adc2gev_EB * pow(1./value, alpha_EB) << std::endl;
         }
         else {
-          myfile << " " << ix << " " << iy << " " << iz << "     " <<  adc2gev_EE * pow(1./value, alpha_EE) << std::endl;
+//           myfile << " " << ix << " " << iy << " " << iz << "     " <<  adc2gev_EE * pow(1./value, alpha_EE) << std::endl;
+          map_of_values[iring] = adc2gev_EE * pow(1./value, alpha_EE);
+//           myfile << " " << iring  << "     " <<  adc2gev_EE * pow(1./value, alpha_EE) << std::endl;
         }
       }
+      
+      
+      if (ieta != -99) {
+        h_EB  -> Fill (iphi, ieta, iring);
+      }
+      else {
+        h_EE  -> Fill (iz < 0 ? ix : ix+100, iy, iring);      
+      }
+      
+      
     }
   }
   
   
+  
+  for (std::map<int,float>::iterator it = map_of_values.begin(); it != map_of_values.end(); it++) {
+    myfile << " " <<  it->first  << "     " << it->second << std::endl;
+    
+  }
+  
   myfile.close(); 
+  
+  
+  
+  fileOutSummary->cd();
+  
+  h_EB -> GetXaxis() -> SetTitle("iphi");
+  h_EB -> GetYaxis() -> SetTitle("ieta");
+  
+  h_EE -> GetXaxis() -> SetTitle("X");
+  h_EE -> GetYaxis() -> SetTitle("Y");
+  
+  h_EB  -> Write();
+  h_EE  -> Write();
+  
+  fileOutSummary->Close();
   
   
   std::cout << std::endl;
   
 }
-
 
 
   

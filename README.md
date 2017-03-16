@@ -65,4 +65,10 @@ Download from DB the laser tag:
 
     lava_db  -c  /afs/cern.ch/work/e/ecalmon/public/dropbox/MC_Tag/EcallaserTag_MC_80X_2017.db     -t EcalLaserAPDPNRatios_2017_mc
     
+
+The IC in MC:
+
+    /afs/cern.ch/user/r/ric/public/4rafael/dump_EcalIntercalibConstants__since_00000001_till_18446744073709551615.dat
+
+    
     
