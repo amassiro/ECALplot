@@ -117,6 +117,9 @@ int main(int argc, char** argv) {
   
   TH2F* h_EB  = new TH2F ("h_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5); 
   TH2F* h_EE  = new TH2F ("h_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
+
+  TH2F* h_value_EB  = new TH2F ("h_value_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5); 
+  TH2F* h_value_EE  = new TH2F ("h_value_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
   
   
   
@@ -187,6 +190,14 @@ int main(int argc, char** argv) {
       }
       
       
+      if (ieta != -99) {
+        h_value_EB  -> Fill (iphi, ieta,  map_of_values[iring]);
+      }
+      else {
+        h_value_EE  -> Fill (iz < 0 ? ix : ix+100, iy,  map_of_values[iring]);      
+      }
+      
+      
     }
   }
   
@@ -212,6 +223,18 @@ int main(int argc, char** argv) {
   h_EB  -> Write();
   h_EE  -> Write();
   
+
+  h_value_EB -> GetXaxis() -> SetTitle("iphi");
+  h_value_EB -> GetYaxis() -> SetTitle("ieta");
+  
+  h_value_EE -> GetXaxis() -> SetTitle("X");
+  h_value_EE -> GetYaxis() -> SetTitle("Y");
+  
+  h_value_EB  -> Write();
+  h_value_EE  -> Write();
+  
+
+
   fileOutSummary->Close();
   
   
