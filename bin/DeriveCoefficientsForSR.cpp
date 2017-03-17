@@ -115,12 +115,13 @@ int main(int argc, char** argv) {
   nametemp = Form ("testSummary_rings_%s.root", output_file_tail.c_str());
   TFile* fileOutSummary = new TFile (nametemp.Data(), "RECREATE");
   
-  TH2F* h_EB  = new TH2F ("h_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5); 
-  TH2F* h_EE  = new TH2F ("h_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
+  TH2F* h_EB  = new TH2F ("h_EB", "Ring",   360, 0.5, 360.5,  171, -85.5, 85.5); 
+  TH2F* h_EE  = new TH2F ("h_EE", "Ring",   200, 0.5, 200.5,  100, 0.5, 100.5);
 
-  TH2F* h_value_EB  = new TH2F ("h_value_EB", "Channel Status",   360, 0.5, 360.5,  171, -85.5, 85.5); 
-  TH2F* h_value_EE  = new TH2F ("h_value_EE", "Channel Status",   200, 0.5, 200.5,  100, 0.5, 100.5);
+  TH2F* h_value_EB  = new TH2F ("h_value_EB", "Value",   360, 0.5, 360.5,  171, -85.5, 85.5); 
+  TH2F* h_value_EE  = new TH2F ("h_value_EE", "Value",   200, 0.5, 200.5,  100, 0.5, 100.5);
   
+  TH1F* h_value_all  = new TH1F ("h_value_all", "Value vs Ring",  250, -125, 125); 
   
   
   
@@ -196,8 +197,7 @@ int main(int argc, char** argv) {
       else {
         h_value_EE  -> Fill (iz < 0 ? ix : ix+100, iy,  map_of_values[iring]);      
       }
-      
-      
+            
     }
   }
   
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
   
   for (std::map<int,float>::iterator it = map_of_values.begin(); it != map_of_values.end(); it++) {
     myfile << " " <<  it->first  << "     " << it->second << std::endl;
-    
+    h_value_all  -> Fill (it->first, it->second);
   }
   
   myfile.close(); 
@@ -234,6 +234,10 @@ int main(int argc, char** argv) {
   h_value_EE  -> Write();
   
 
+  h_value_all -> GetXaxis() -> SetTitle("Ring");
+  h_value_all -> GetYaxis() -> SetTitle("Value");
+  h_value_all  -> Write();
+  
 
   fileOutSummary->Close();
   
